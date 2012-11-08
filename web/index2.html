@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+	<link type="text/css" href="./media/skin/jplayer.blue.monday.css" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="./media/css/scrollbar.css" />
+	<!--<link rel="stylesheet" type="text/css" href="./media/css/scrollbars-black.css" />-->
+	<link type="text/css" href="./media/css/style.css" rel="stylesheet" />
+	
+	<!--<link rel="shortcut icon" href="./media/img/favicon1.ico">-->
+	<link rel="icon" type="image/png" href="./media/img/Logo-black-65px.png" />
+	<!--<link type="text/css" href="./media/css/screen.css" rel="stylesheet" />-->
+	<link type="text/css" href="./media/css/redmond1/jquery-ui-1.8.20.custom.css" rel="stylesheet" />
+	<script type="text/javascript" src="./media/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.tablesorter.js"></script>
+	<script type="text/javascript" src="./media/js/jquery-ui-1.8.20.custom.min.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.jplayer.min.js"></script>
+	<script type="text/javascript" src="./media/js/jplayer.playlist.min.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.tablescroll.js"></script>
+	
+	<!-- The follwing scripts are inter dependent, they should be included in the same order -->
+	<script type="text/javascript" src="./media/js/myfunctions.js"></script>
+	<!-- Scrollbar js-->
+	<!--<script src="./media/js/jquery.event.drag-2.0.min.js"></script>
+	<script src="./media/js/jquery.ba-resize.min.js"></script>
+	<script src="./media/js/mousehold.js"></script>
+	<script src="./media/js/jquery.mousewheel.js"></script>
+	
+	<script src="./media/js/aplweb.scrollbars.js"></script>-->
+	
+<title>Browser</title>
+
+<script type="text/javascript">
+	var myPlaylist;
+	var section_height_ratio = 0.730;
+	var content_height_ratio = 0.512;
+	var collection = "carnatic";
+	function initializeJPlayer(){
+		$("#jquery_jplayer_1").jPlayer({
+			ready: function () {
+			$(this).jPlayer("setMedia", {
+				mp3: "./media/audio/1-01_Ud_Taksim.mp3"
+			});
+			},
+			swfPath: "./media/js",
+			supplied: "mp3"
+		});
+
+		myPlaylist = new jPlayerPlaylist({
+			jPlayer: "#jquery_jplayer_1",
+			cssSelectorAncestor: "#jp_container_1"}, [], 
+			{
+				playlistOptions: {
+					enableRemoveControls: true
+				},
+				swfPath: "./media/js",
+				supplied: "mp3",
+				wmode: "window"
+		}); // End of playlist initialization.
+	}
+	function resize_window(){
+		$("#all").height(Math.floor($(document).height()*0.940));
+		$("#allcontent").height(Math.floor($(document).height()*section_height_ratio));
+		$("#content_main").height(Math.floor($(document).height()*content_height_ratio));
+		$("#dialog").dialog({
+			bgiframe: true,
+			autoOpen: false,
+			height: Math.floor($(document).height()*0.850),
+			width: Math.floor($(document).width()*0.700),
+			modal: true,
+			position: 'top'
+		});
+		$(".ui-widget-overlay").live("click", function () {
+			$("#dialog").dialog( "close" );
+		});
+	}
+	
+	function getFields(){
+		$.get(
+			"/filters/"+collection,
+			function(responseText){
+				$("#primary").html(generateFields(responseText, collection));
+				$( "input:submit, a, button", ".filters" ).button();
+				$( "a", ".filters" ).click(function() { return false; });
+				$( "a", ".filters" ).css({'width': '44%', 'text-align': 'center'});
+				$(".ui-button-text").addClass('grayButton');
+				$("#content_data").empty();
+				$("#content_info").html('<div class="trash-ui trash" id="clear_filters"></div>');
+				initializeContent();
+				fillContent("/collection/"+collection, collection);
+				$("#content_list").tablesorter({debug: true, widgets: ['reorganizeList'] });
+			},
+			"text"
+		);
+	}
+	
+	var ajaxLoad = '<div id="loading"><img src="./media/img/ajax_loader_large.gif" height="80" /></div>';
+	$(document).ready(function() {
+		/*$("#allcontent").height(Math.floor($(document).height()*0.850));
+		$("#primary").height(Math.floor($(document).height()*section_height_ratio));
+		$("#content").height(Math.floor($(document).height()*section_height_ratio));
+		$("#content_main").height(Math.floor($(document).height()*content_height_ratio));
+		$("#secondary").height(Math.floor($(document).height()*section_height_ratio));
+		$("#header").width(Math.floor($(document).width()*0.977));
+		$("#allcontainer").width(Math.floor($(document).width()*0.977));
+		$("#footer").width(Math.floor($(document).width()*0.982));*/
+		
+		/*$("#all").height(Math.floor($(document).height()*0.960));
+		$("#all").width(Math.floor($(document).width()*0.990));
+		$("#content").height(Math.floor($(document).height()*section_height_ratio));*/
+		resize_window();
+		
+		getFields();
+		
+		$( "#tabs" ).tabs({
+			ajaxOptions: {
+				error: function( xhr, status, index, anchor ) {
+					$( anchor.hash ).html(
+						"Couldn't load this tab. We'll try to fix this as soon as possible. " +
+						"If this wouldn't be a demo." );
+				}
+			}
+		});
+		$( "input:submit, a, button", "#playlists" ).button();
+		$( "input:submit, a, button", "#content_search").button();
+		$(".ui-button-text").addClass('grayButton');
+		$(".ui-button").addClass('grayButton');
+		$( "a", "#playlists" ).click(function() { return false; });
+		$( "input:submit", "#content_search" ).click(function() { return false; });
+		$( "a", "#playlists" ).css({'width': '88%', 'text-align': 'center'});
+		
+		
+		$(window).resize(function () {
+			//window.alert("Resized");
+			resize_window();
+		});
+		
+		$("#clear_filters").live("hover", function() {
+			$(this).css('cursor', 'pointer');
+		});
+		$("#clear_filters").live("click", function() {
+			$("#content_main").empty();
+			$("#content_info").html('<div class="trash-ui trash" id="clear_filters"></div>');
+			initializeContent();
+			fillContent("/collection/"+collection, collection);
+			$("#content_list").tablesorter({debug: true, widgets: ['reorganizeList'] });
+		});
+		
+		/*$(".filter_name").live("hover", function() {
+			$(this).css('cursor', 'pointer');
+			$(this).addClass("filter_hover");
+		});
+		$(".filter_name").live("mouseout", function() {
+			$(this).removeClass("filter_hover");
+		});*/
+		
+		$(".filter_label table tr td").live("hover", function() {
+			$(this).css('cursor', 'pointer');
+			$(this).addClass("filter_option_hover");
+		});
+		
+		$(".filter_label table tr td").live("mouseout", function() {
+			$(this).removeClass("filter_option_hover");
+		});
+		
+		$(".filter_label table tr td").live("click", function() {
+			parents = $(this).parents();
+			window.alert($(this).attr("value"));
+			filter_id = $(parents[3]).attr("id");
+			$("#"+filter_id).attr("value", $(this).attr("value"));
+			updateFilters(collection); //TODO: check
+		});
+		
+		$(".remove_filter").live("hover", function() {
+			$(this).css('cursor', 'pointer');
+		});
+		$(".remove_filter").live("click", function() {
+			filter_id = $(this).attr("id");
+			filter_id = filter_id.substr(filter_id.indexOf("_")+1);
+			//window.alert(filter_id + ":" + $("#"+filter_id))
+			$("#"+filter_id).remove();
+			updateFilters(collection); //TODO: check
+		});
+		
+		//$('#content_list').tableScroll({height: 500});
+		//window.alert(Math.floor($(document).height()*content_height_ratio));
+		
+	});
+</script>
+</head>
+<body>
+
+
+<!-- The following is the title -->
+<div id="all">
+	<div id="header">
+		<table class="banner">
+			<tr>
+				<td class="banner-logo" rowspan="2"><a href="."><img src="./media/img/Logo-65px.png" height="65px"/></a></td>
+				<td class="banner-title">CompMusic browser</td>
+			</tr>
+			<tr>
+				<td class="banner-subtitle">A culture-specific way to browse music collections</td>
+			</tr>
+		</table>
+		<div class="header_bottom">&nbsp;</div>
+	</div>
+	<div id="allcontent">
+	<div id="primary">
+		<!--<div id="filters_header" class="section_header ui-widget-header" >Fields</div>-->
+		<div class="filters">
+			<a href="#" onclick="fetchInfo('/performers/collection/carnatic', 'performer', 'carnatic')">Performer</a>
+			<a href="#" onclick="fetchInfo('/composers/collection/carnatic', 'composer', 'carnatic')">Composer</a>
+			<br/>
+			<a href="#" onclick="fetchInfo('/lyricists/collection/carnatic', 'lyricist', 'carnatic')">Lyricist</a>
+			<a href="#" onclick="fetchInfo('/instruments/collection/carnatic', 'instrument', 'carnatic')">Instrument</a>
+			<br/>
+			<a href="#" onclick="fetchInfo('/forms/collection/carnatic', 'form', 'carnatic')">Form</a>
+			<a href="#" onclick="fetchInfo('/releases/collection/carnatic', 'release', 'carnatic')">Release</a>
+			<br/>
+			<a href="#" onclick="fetchInfo('/works/collection/carnatic', 'work', 'carnatic')">Work</a>
+			
+		</div>
+		<div class="filters">
+			<a href="#" onclick="fetchInfo('/raaga', 'raaga', 'carnatic')">Raaga</a>
+			<a href="#" onclick="fetchInfo('/taala', 'taala', 'carnatic')">Taala</a>
+		</div>
+	</div>
+	<div id="dialog" title="Fields">
+	</div>
+	<div id="content">
+		<div id="content_search">
+			<input type="text" id="search_content" name="search_content"></input>
+			<input type="submit" id="submit_search_content" value="Search"></input>
+		</div>
+		<div id="content_main">
+		<table id="content_list" class="tablesorter" cellpadding="5px" cellspacing="0px">
+			<thead>
+			<tr>
+				<th class="header ui-widget-header">Title</th>
+				<th class="header ui-widget-header">Artist</th>
+				<th class="header ui-widget-header">Release</th>
+				<th class="header ui-widget-header">Raaga</th>
+				<th class="header ui-widget-header">Taala</th>
+			</tr>
+			</thead>
+			<tbody>
+			<tr class="even">
+				<td><span class="add_to_playlist" id="1a840c38-24a1-4faf-8710-d543c0d5aafe" name="Sudha Ragunathan" title="Thillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("1a840c38-24a1-4faf-8710-d543c0d5aafe", "Thillana", "recording", "carnatic");'>Thillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("66f992fb-8cfa-4ea5-b80b-20b1af8b310b", "Sudha Ragunathan", "performer", "carnatic");'>Sudha Ragunathan</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "Carnatic Vocal", "release", "carnatic");'>Carnatic Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "bhairavi", "raaga", "carnatic");'>Bhairavi</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span class="add_to_playlist" id="c6758c9e-fd4e-4d55-a250-5283fff6741f" name="Bombay Jayashri" title="Tillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("c6758c9e-fd4e-4d55-a250-5283fff6741f", "Tillana", "recording", "carnatic");'>Tillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "kalyani", "raaga", "carnatic");'>Kalyani</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="even">
+				<td><span style="cursor: pointer;" class="add_to_playlist" id="9505af2e-c772-49ef-834f-3f614e1117ac" name="Bombay Jayashri" title="Sri Jagadeeswari"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("9505af2e-c772-49ef-834f-3f614e1117ac", "Sri Jagadeeswari", "recording", "carnatic");'>Sri Jagadeeswari</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "chakravakam", "raaga", "carnatic");'>Chakravakam</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "misram", "taala", "carnatic");'>Misram</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span class="add_to_playlist" id="1a840c38-24a1-4faf-8710-d543c0d5aafe" name="Sudha Ragunathan" title="Thillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("1a840c38-24a1-4faf-8710-d543c0d5aafe", "Thillana", "recording", "carnatic");'>Thillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("66f992fb-8cfa-4ea5-b80b-20b1af8b310b", "Sudha Ragunathan", "performer", "carnatic");'>Sudha Ragunathan</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "Carnatic Vocal", "release", "carnatic");'>Carnatic Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "bhairavi", "raaga", "carnatic");'>Bhairavi</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="even">
+				<td><span class="add_to_playlist" id="c6758c9e-fd4e-4d55-a250-5283fff6741f" name="Bombay Jayashri" title="Tillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("c6758c9e-fd4e-4d55-a250-5283fff6741f", "Tillana", "recording", "carnatic");'>Tillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "kalyani", "raaga", "carnatic");'>Kalyani</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span style="cursor: pointer;" class="add_to_playlist" id="9505af2e-c772-49ef-834f-3f614e1117ac" name="Bombay Jayashri" title="Sri Jagadeeswari"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("9505af2e-c772-49ef-834f-3f614e1117ac", "Sri Jagadeeswari", "recording", "carnatic");'>Sri Jagadeeswari</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "chakravakam", "raaga", "carnatic");'>Chakravakam</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "misram", "taala", "carnatic");'>Misram</a></td>
+			</tr>
+			<tr class="even">
+				<td><span class="add_to_playlist" id="1a840c38-24a1-4faf-8710-d543c0d5aafe" name="Sudha Ragunathan" title="Thillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("1a840c38-24a1-4faf-8710-d543c0d5aafe", "Thillana", "recording", "carnatic");'>Thillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("66f992fb-8cfa-4ea5-b80b-20b1af8b310b", "Sudha Ragunathan", "performer", "carnatic");'>Sudha Ragunathan</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "Carnatic Vocal", "release", "carnatic");'>Carnatic Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "bhairavi", "raaga", "carnatic");'>Bhairavi</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span class="add_to_playlist" id="c6758c9e-fd4e-4d55-a250-5283fff6741f" name="Bombay Jayashri" title="Tillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("c6758c9e-fd4e-4d55-a250-5283fff6741f", "Tillana", "recording", "carnatic");'>Tillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "kalyani", "raaga", "carnatic");'>Kalyani</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="even">
+				<td><span style="cursor: pointer;" class="add_to_playlist" id="9505af2e-c772-49ef-834f-3f614e1117ac" name="Bombay Jayashri" title="Sri Jagadeeswari"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("9505af2e-c772-49ef-834f-3f614e1117ac", "Sri Jagadeeswari", "recording", "carnatic");'>Sri Jagadeeswari</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "chakravakam", "raaga", "carnatic");'>Chakravakam</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "misram", "taala", "carnatic");'>Misram</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span class="add_to_playlist" id="1a840c38-24a1-4faf-8710-d543c0d5aafe" name="Sudha Ragunathan" title="Thillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("1a840c38-24a1-4faf-8710-d543c0d5aafe", "Thillana", "recording", "carnatic");'>Thillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("66f992fb-8cfa-4ea5-b80b-20b1af8b310b", "Sudha Ragunathan", "performer", "carnatic");'>Sudha Ragunathan</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "Carnatic Vocal", "release", "carnatic");'>Carnatic Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "bhairavi", "raaga", "carnatic");'>Bhairavi</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="even">
+				<td><span class="add_to_playlist" id="c6758c9e-fd4e-4d55-a250-5283fff6741f" name="Bombay Jayashri" title="Tillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("c6758c9e-fd4e-4d55-a250-5283fff6741f", "Tillana", "recording", "carnatic");'>Tillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "kalyani", "raaga", "carnatic");'>Kalyani</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span style="cursor: pointer;" class="add_to_playlist" id="9505af2e-c772-49ef-834f-3f614e1117ac" name="Bombay Jayashri" title="Sri Jagadeeswari"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("9505af2e-c772-49ef-834f-3f614e1117ac", "Sri Jagadeeswari", "recording", "carnatic");'>Sri Jagadeeswari</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "chakravakam", "raaga", "carnatic");'>Chakravakam</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "misram", "taala", "carnatic");'>Misram</a></td>
+			</tr>
+			<tr class="even">
+				<td><span class="add_to_playlist" id="1a840c38-24a1-4faf-8710-d543c0d5aafe" name="Sudha Ragunathan" title="Thillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("1a840c38-24a1-4faf-8710-d543c0d5aafe", "Thillana", "recording", "carnatic");'>Thillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("66f992fb-8cfa-4ea5-b80b-20b1af8b310b", "Sudha Ragunathan", "performer", "carnatic");'>Sudha Ragunathan</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "Carnatic Vocal", "release", "carnatic");'>Carnatic Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "bhairavi", "raaga", "carnatic");'>Bhairavi</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span class="add_to_playlist" id="c6758c9e-fd4e-4d55-a250-5283fff6741f" name="Bombay Jayashri" title="Tillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("c6758c9e-fd4e-4d55-a250-5283fff6741f", "Tillana", "recording", "carnatic");'>Tillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "kalyani", "raaga", "carnatic");'>Kalyani</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="even">
+				<td><span style="cursor: pointer;" class="add_to_playlist" id="9505af2e-c772-49ef-834f-3f614e1117ac" name="Bombay Jayashri" title="Sri Jagadeeswari"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("9505af2e-c772-49ef-834f-3f614e1117ac", "Sri Jagadeeswari", "recording", "carnatic");'>Sri Jagadeeswari</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "chakravakam", "raaga", "carnatic");'>Chakravakam</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "misram", "taala", "carnatic");'>Misram</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span class="add_to_playlist" id="1a840c38-24a1-4faf-8710-d543c0d5aafe" name="Sudha Ragunathan" title="Thillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("1a840c38-24a1-4faf-8710-d543c0d5aafe", "Thillana", "recording", "carnatic");'>Thillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("66f992fb-8cfa-4ea5-b80b-20b1af8b310b", "Sudha Ragunathan", "performer", "carnatic");'>Sudha Ragunathan</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "Carnatic Vocal", "release", "carnatic");'>Carnatic Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "bhairavi", "raaga", "carnatic");'>Bhairavi</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="even">
+				<td><span class="add_to_playlist" id="c6758c9e-fd4e-4d55-a250-5283fff6741f" name="Bombay Jayashri" title="Tillana"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("c6758c9e-fd4e-4d55-a250-5283fff6741f", "Tillana", "recording", "carnatic");'>Tillana</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "kalyani", "raaga", "carnatic");'>Kalyani</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "adi", "taala", "carnatic");'>Adi</a></td>
+			</tr>
+			<tr class="odd">
+				<td><span style="cursor: pointer;" class="add_to_playlist" id="9505af2e-c772-49ef-834f-3f614e1117ac" name="Bombay Jayashri" title="Sri Jagadeeswari"><img src="./media/img/add-to-playlist.png" height="12px"/></span> <a class="content_link" href="#" onclick='fillFilters("9505af2e-c772-49ef-834f-3f614e1117ac", "Sri Jagadeeswari", "recording", "carnatic");'>Sri Jagadeeswari</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("fc5db44d-8b22-4b0c-8005-00c60553662d", "Bombay Jayashri", "performer", "carnatic");'>Bombay Jayashri</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("e00e0e8b-4f9a-4a81-aa4c-0609ee71c94f", "Classical Vocal", "release", "carnatic");'>Classical Vocal</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "chakravakam", "raaga", "carnatic");'>Chakravakam</a></td>
+				<td><a class="content_link" href="#" onclick='fillFilters("595fe506-7bf9-41f1-9a11-2f0914fedce3", "misram", "taala", "carnatic");'>Misram</a></td>
+			</tr>
+		</tbody>
+		</table>
+		</div>
+		<!--<div id="content_faceted">-->
+		<div id="content_info">
+			<div class="trash-ui trash" id="clear_filters"></div>
+			<div class="filter_label" type="composer" id="filter_9229f145-a8bd-442b-ae12-ca75e24ea178" name="Lalgudi Jayaraman" value="and">
+				<div class="ui-icon ui-icon-close remove_filter" id="remove_filter_9229f145-a8bd-442b-ae12-ca75e24ea178"></div>	
+				<span style="cursor: pointer;" class="filter_name">composer:<br />Lalgudi Jayaraman</span><br />
+				<table class="testable">
+				<tbody>
+					<tr>
+						<td name="filter_option" value="and" class="filter_option_checked">And</td>
+						<td name="filter_option" value="or">Or</td>
+						<td name="filter_option" value="not">Not</td>
+					</tr>
+				</tbody>
+				</table>
+			</div>
+			<div class="filter_label" type="performer" id="filter_fc5db44d-8b22-4b0c-8005-00c60553662d" name="Bombay Jayashri" value="and">
+				<div class="ui-icon ui-icon-close remove_filter" id="remove_filter_fc5db44d-8b22-4b0c-8005-00c60553662d"></div>
+				<span class="filter_name">performer:<br />Bombay Jayashri</span><br />
+				<form id="form_fc5db44d-8b22-4b0c-8005-00c60553662d">
+					<table class="testable">
+					<tbody>
+						<tr>
+							<td name="filter_option" value="and" class="filter_option_checked">And</td>
+							<td name="filter_option" value="or">Or</td>
+							<td name="filter_option" value="not">Not</td>
+						</tr>
+					</tbody>
+					</table>
+				</form>
+			</div>
+		</div>
+		<!--</div>-->
+	</div>
+	
+	<div id="secondary">
+		<!--<div id="playlists_header" class="section_header ui-widget-header" >Playlists</div>-->
+		<div id="playlists">
+			<ul>
+				<li><a href="#">Playlist 1</a></li>
+				<li><a href="#">Playlist 2</a></li>
+				<li><a href="#">Playlist 3</a></li>
+				<li><a href="#">Playlist 4</a></li>
+			</ul>
+		</div>
+	</div>
+	</div>
+	
+	<!--
+	<div class="colmask threecol">
+		<div class="colmid">
+			<div class="colleft">
+				<div class="col1">
+					Content
+				</div>
+				<div class="col2">
+					Filters
+				</div>
+				<div class="col3">
+					Sessions
+				</div>
+			</div>
+		</div>
+	</div>
+	-->
+	<!--
+	<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Preloaded</a></li>
+			<li><a href="ajax/content1.html">Tab 1</a></li>
+			<li><a href="ajax/content2.html">Tab 2</a></li>
+			<li><a href="ajax/content3-slow.php">Tab 3 (slow)</a></li>
+			<li><a href="ajax/content4-broken.php">Tab 4 (broken)</a></li>
+		</ul>
+		<div id="tabs-1">
+			<p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
+		</div>
+	</div>
+	-->
+	
+	<div id="footer">
+		<img src="./media/img/audioplayer3.png" width="100%"/>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+PATH = "/mnt/compmusic/incoming"
+AUDIO_PATH = "/mnt/compmusic/compmusicweb/compmusic"
+DESCRIPTORS_PATH = "/mnt/compmusic/compmusicweb/compmusic"
+WEB_LINK_PATH = "/mnt/compmusic/compmusicweb/compmusic/musicbrowser/web/media/audio/links"
+DESCRIPTORS_WEB_LINK_PATH = "/mnt/compmusic/compmusicweb/compmusic/musicbrowser/web/media/descriptors/links"

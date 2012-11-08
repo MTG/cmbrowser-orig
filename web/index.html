@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+	<link id="jplayer_css" type="text/css" href="./media/skin/jplayer.compmusic_classic.css" rel="stylesheet" />
+	<!--<link type="text/css" href="./media/skin-dark/jplayer.dark.css" rel="stylesheet" />-->
+	<link rel="stylesheet" type="text/css" href="./media/css/scrollbar.css" />
+	<!--<link rel="stylesheet" type="text/css" href="./media/css/scrollbars-black.css" />-->
+	<link id="main_css" type="text/css" href="./media/css/style_classic.css" rel="stylesheet" />
+	
+	<link rel="icon" type="image/png" href="./media/img/Logo-black-65px.png" />
+	<!--<link type="text/css" href="./media/css/screen.css" rel="stylesheet" />-->
+	<link id="ui_css" type="text/css" href="./media/css/redmond1/jquery-ui-1.8.20.classic.css" rel="stylesheet" />
+	<script type="text/javascript" src="./media/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.tablesorter.js"></script>
+	<script type="text/javascript" src="./media/js/jquery-ui-1.8.20.custom.min.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.jplayer.min.js"></script>
+	<script type="text/javascript" src="./media/js/jplayer.playlist.min.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.tablescroll.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.uitablefilter.js"></script>
+	<script type="text/javascript" src="./media/js/jquery.qtip-1.0.0-rc3.min.js"></script>
+	
+	<!---------------------------------------------------------------------------------------------->
+	<!-------------------------------------------REPOVIZZ------------------------------------------->
+	<!---------------------------------------------------------------------------------------------->
+	 <!--CSS-->
+		<!--<link rel="stylesheet" type="text/css" href="media/repovizz/themes/chromeMenu/chromestyle.css" />
+		<link rel="stylesheet" type="text/css" href="media/repovizz/themes/popup/nyroModal.css" media="screen" />
+		<link rel="stylesheet" type="text/css" href="media/repovizz/themes/accordion/apple_accordion.css" />
+		<link rel="stylesheet" type="text/css" href="media/repovizz/themes/main.css" />
+		<link rel="stylesheet" type="text/css" href="media/repovizz/themes/dddropdownpanel/dddropdownpanel.css" />
+		<link rel="stylesheet" type="text/css" href="media/repovizz/themes/video.css" media="screen" /> 
+		<link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css"/>-->
+	      
+		
+		
+		<!--CANVAS-->
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/xmlTree.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/canvasMain.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/canvasGlobal.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/csv.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/design.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/canvasHScrollbarMain.js"></script>  
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/canvasVScrollbarMain.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/canvasTopMenuMain.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/canvasTopMenuLeft.js"></script>  
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/canvasLowMenuLeft.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/leftMenu.js"></script>  
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/contextMenuLeftMenu.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/contextMenuCanvas.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/generalTooltip.js"></script>   
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/userSegmentation.js"></script>  
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/globals.js"></script>  
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/utils.js"></script>  
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/server.js"></script>  
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/multimedia.js"></script> 
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/keyboard.js"></script> 
+		<script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/keyboardHandler.js"></script>   
+		<!-- <script type="text/javascript" src="media/repovizz/js/dataPackVisualizator/fps.js"></script>  --> 
+		
+		<!--TOP MENU-->
+		<!--  <script type="text/javascript" src="media/repovizz/js/chromeMenu/chromeMenu.js"></script> -->
+		
+		<!--3DVIZZ-->
+		<script type="text/javascript" src="media/repovizz/js/vizz3D/vizz3D-0.1.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/vizz3D/processing-1.3.6.min.js"></script>
+	      
+		<!--JQUERY-->
+		<!--<script type="text/javascript" src="media/repovizz/js/jquery/jquery-1.7.1.min.js"></script>
+		<script type="text/javascript" src="media/repovizz/js/jquery/jquery-ui-1.8.17.custom.min.js"></script>-->
+		
+		
+		<!--LOGIC CLASSES-->
+		<script type="text/javascript" src="media/repovizz/js/SIEMPREClasses.js"></script>
+		
+		<!-- MAIN -->
+		<script type="text/javascript" src="media/js/repovizz.js"></script>
+	
+	
+	<!---------------------------------------------------------------------------------------------->
+	<!-------------------------------------------REPOVIZZ------------------------------------------->
+	<!---------------------------------------------------------------------------------------------->
+	
+	<!-- The follwing scripts are inter dependent, they should be included in the same order -->
+	<script type="text/javascript" src="./media/js/details.js"></script>
+	<script type="text/javascript" src="./media/js/content.js"></script>
+	<script type="text/javascript" src="./media/js/helper.js"></script>
+	
+	
+<title>Browser</title>
+
+<script type="text/javascript">
+	$(document).ready(readyCallback);
+	function readyCallback(){
+		readyCallbackCompMusic();
+	}
+</script>
+</head>
+<body>
+
+
+<!-- The following is the title -->
+<div id="all">
+	<div id="header">
+		<table class="banner">
+			<tr>
+				<td class="banner-logo" rowspan="2"><a href="."><img src="./media/img/Logo-65px.png" height="65px"/></a></td>
+				<td class="banner-title"><div id="banner-title">CompMusic browser</div>
+				<div class="select-collection">
+					<span class="collection_link" value="hindustani" id="hindustani">Hindustani</span> |
+					<span class="collection_link" value="carnatic" id="carnatic">Carnatic</span> |
+					<span class="collection_link" value="ottoman" id="ottoman">Turkish Makam</span>
+				</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="banner-subtitle">A culture-specific way to browse music collections
+				
+				</td>
+			</tr>
+		</table>
+		
+		<div class="header_bottom">&nbsp;</div>
+	</div>
+	<div id="allcontent">
+	<div id="primary">
+		<!--<div id="filters_header" class="section_header ui-widget-header" >Fields</div>-->
+	</div>
+	<div id="dialog" title="Fields">
+	</div>
+	<div id="content">
+		<div id="content_search">
+			<input type="text" id="search_content" name="search_content"></input>
+			<!--<input type="submit" id="submit_search_content" value="Search"></input>-->
+		</div>
+		<div id="content_main">
+		</div>
+		<!--<div id="content_faceted">-->
+		<div id="content_querybag">
+		</div>
+		<!--</div>-->
+	</div>
+	
+	<div id="secondary">
+		<!--<div id="playlists_header" class="section_header ui-widget-header" >Playlists</div>-->
+		<div id="playlists">
+			<ul>
+				<li><a href="#">Session 1</a></li>
+				<li><a href="#">Session 2</a></li>
+				<li><a href="#">Session 3</a></li>
+				<li><a href="#">Session 4</a></li>
+			</ul>
+		</div>
+	</div>
+	<div id="hidden_content"></div>
+	</div>
+	
+	<div id="footer">
+		<!--<img src="./media/img/audioplayer3.png" width="100%"/>-->
+		
+		<!-- The following is the jPlayer Element -->
+		<div id="jplayer-wrapper">
+			
+			<div id="jquery_jplayer_1" class="jp-jplayer"></div>
+			<div id="jp_container_1" class="jp-audio">
+				
+				<div class="jp-type-playlist">
+					<div class="jp-playlist" style="display:none;">
+						<ul>
+							<li></li>
+						</ul>
+					</div>
+					<div class="jp-gui jp-interface">
+						<!--<div class="div-jp-controls">-->
+						<div id="left-space-player">&nbsp;</div>
+						<div class="controls">
+							
+							<ul class="jp-controls">
+								<li><a href="javascript:;" class="jp-previous" tabindex="1">previous</a></li>
+								<li><a href="javascript:;" class="jp-play" tabindex="1">play</a></li>
+								<li><a href="javascript:;" class="jp-pause" tabindex="1">pause</a></li>
+								<li><a href="javascript:;" class="jp-next" tabindex="1">next</a></li>
+	
+								<li><a href="javascript:;" class="jp-stop" tabindex="1">stop</a></li>
+								<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
+								<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+								<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+								<div id="toggle_playlist">
+									<!--<img src="./media/img/toggle_up.png" height="15"/>-->
+									Show playlist
+								</div>
+							</ul>
+							<!--</div>-->
+							<div class="jp-progress">
+								<!--<div class="track_name">Artist - Title</div>-->
+								<div class="jp-seek-bar">
+									<div class="jp-play-bar"></div>
+								</div>
+							</div>
+							<!--<ul class="jp-controls">
+								<li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute">mute</a></li>
+								<li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute">unmute</a></li>
+								<li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume">max volume</a></li>
+							</ul>-->
+							<div class="jp-volume-bar">
+								<div class="jp-volume-bar-value"></div>
+							</div>
+							
+							<div class="jp-time-holder">
+								<div class="jp-current-time"></div>
+								<div class="jp-duration"></div>
+							</div>
+							<!--
+							<ul class="jp-toggles">
+								<li><a href="javascript:;" class="jp-shuffle" tabindex="1" title="shuffle">shuffle</a></li>
+								<li><a href="javascript:;" class="jp-shuffle-off" tabindex="1" title="shuffle off">shuffle off</a></li>
+								<li><a href="javascript:;" class="jp-repeat" tabindex="1" title="repeat">repeat</a></li>
+								<li><a href="javascript:;" class="jp-repeat-off" tabindex="1" title="repeat off">repeat off</a></li>
+							</ul>-->
+							
+						</div>
+						<div id="right-space-player">&nbsp;</div>
+					</div>
+					
+					<div class="jp-no-solution">
+						<span>Update Required</span>
+
+						To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+					</div>
+				</div>
+				
+			</div>
+
+		</div>
+		<!-- End of the jPlayer Element -->
+	</div>
+</div>
+
+</body>
+</html>

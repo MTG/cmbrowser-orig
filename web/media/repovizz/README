@@ -1,0 +1,13 @@
+Changed these two lines in SIEMPREClasses.js
+
+document.write("<script src='media/repovizz/js/binary-parser.js' ></script>");
+document.write("<script src='media/repovizz/js/binaryReader.js' ></script>");
+
+
+changed one line in server.js
+var target = 'ws://' + window.location.hostname+":8080" + _target;
+
+
+changes lines 41 and 42 of generalTooltip.js
+var x = e.pageX - $('#repoVizzVisualizerDiv').offset().left;// - divTT.offsetLeft;
+var y = e.pageY - $('#repoVizzVisualizerDiv').offset().top + 60;// - divTT.offsetTop;

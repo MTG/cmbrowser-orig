@@ -1,0 +1,35 @@
+DEPENDENCIES:
+-------------
+* mysql
+* python
+* python-mysqldb
+
+additionally, to have a web interface to use mysql:
+
+* phpmyadmin
+
+-- in ubuntu:
+sudo apt-get install mysql-server mysql-client python-mysqldb phpmyadmin 
+
+CREATE DATABASE, TABLES AND INSERTS:
+------------------------------------
+
+SQL files: compmusic_mysql_script.sql + inserts.sql
+
+1st) in phpmyadmin:
+enter as a root, create database called "compmusic", then click on privileges and 'Add a new user' to have access to read/write in this database.
+
+Let's say you created user compmusic with pasword xxxxx (it means your own passwd) 
+
+2nd) then in a terminal (ubuntu):
+mysql -u compmusic -p compmusic < compmusic_mysql_script.sql
+mysql -u compmusic -p compmusic < inserts.sql
+
+If everything went fine, you already have your MySQL database filled with MusicBrainz data.
+
+-----------------
+
+Now you can start using DAO.py
+Open the script, go to the bottom and see in the __main__ some examples.
+The work is still in progress.
+

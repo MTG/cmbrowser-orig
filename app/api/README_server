@@ -1,0 +1,55 @@
+DEPENDENCIES:
+-------------
+* python
+* python-simplejson
+* web.py
+
+-- in ubuntu:
+sudo apt-get install python-setuptools python-simplejson
+sudo easy_install web.py
+
+
+RUNNING web.py
+---------------
+cd /path/to/CompMusicBrowser/app/api
+python API.py
+
+- In ubuntu, usually the web.py module is deployed in http://0.0.0.0:8080/, go to your favorite browser and type in the url
+
+
+Examples (more work in progress)
+--------------------------------
+
+# Get all the instruments in all cultures
+http://0.0.0.0:8080/instruments
+
+# Get all the instruments by culture
+http://0.0.0.0:8080/instruments/collection/Carnatic
+http://0.0.0.0:8080/instruments/collection/Hindustani
+http://0.0.0.0:8080/instruments/collection/Ottoman
+
+# Get all the recordings where instrument Tambura is used (JSON format) --> raagas, talas, etc. are included as tags
+http://0.0.0.0:8080/instrument/tambura/recordings
+
+# Get all the recordings where instrument Tambura is used (JSON format) in a specific culture --> raagas, talas, etc. are included as tags
+http://0.0.0.0:8080/instrument/tambura/recordings/collection/Carnatic
+
+# Get all the recordings by culture --> raagas, talas, etc. are included as tags (LIMIT=10 by default)
+http://0.0.0.0:8080/recordings/collection/Ottoman
+
+# Get all releases by culture --> artists means the artists from the relation table, while artist is the release artist (LIMIT=10 by default)
+http://0.0.0.0:8080/releases/collection/Ottoman
+
+# Get all performers by culture --> recordings_relations means the recordings from the relation table, while recordings are the artist recordings
+#TODO: add artist info
+http://0.0.0.0:8080/performers/collection/Hindustani
+
+# Get all composers by culture --> recordings_relations means the recordings from the relation table, while recordings are the artist recordings
+http://0.0.0.0:8080/composers/collection/Carnatic
+
+# Get all lyricists by culture --> recordings_relations means the recordings from the relation table, while recordings are the artist recordings
+http://0.0.0.0:8080/lyricists/collection/Hindustani
+
+
+
+
