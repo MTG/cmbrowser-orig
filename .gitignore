@@ -1,0 +1,4 @@
+*.pyc
+*~
+web/media/audio
+web/media/descriptors
